@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// 迁移数据库
+// npx prisma migrate dev --name initial-migration --schema ./prisma/schema.prisma
+
+// 重置数据库
+// npx prisma migrate reset --schema ./prisma/schema.prisma
+
+// 用于生产环境的数据迁移操作 建议本地先使用dev生成文件之后提交到git上 由线上数据库执行该命令
+// npx prisma migrate deploy --schema ./prisma/schema.prisma
+
+// 回归到指定版本
+// npx prisma migrate resolve --applied --schema ./prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generator/prisma"
+}
+
+generator nestgraphql {
+  provider          = "node node_modules/prisma-nestjs-graphql"
+  output            = "../../src/prisma-model-graphql"
+  outputFilePattern = "/{type}/{name}.{type}.ts"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String     @id @default(uuid())
+  username String     @unique /// 测试
+  password String
+  UserRole UserRole[]
+  // @@map("user")  // 对应表名
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  users       UserRole[]
+}
+
+model UserRole {
+  roleId String
+  userId String
+  Role   Role   @relation(fields: [roleId], references: [id])
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@id([userId, roleId]) /// 设置联合主键
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  action      String
+  description String?
+}
