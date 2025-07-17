@@ -1,5 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
+import { UserRoleUncheckedCreateNestedManyWithoutUserInput } from './user-role-unchecked-create-nested-many-without-user.input';
 
 @InputType()
 export class UserUncheckedCreateInput {
@@ -12,4 +13,7 @@ export class UserUncheckedCreateInput {
 
     @Field(() => String, {nullable:false})
     password!: string;
+
+    @Field(() => UserRoleUncheckedCreateNestedManyWithoutUserInput, {nullable:true})
+    userRole?: UserRoleUncheckedCreateNestedManyWithoutUserInput;
 }

@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from './string-field-update-operations.input';
+import { UserRoleUncheckedUpdateManyWithoutUserNestedInput } from './user-role-unchecked-update-many-without-user-nested.input';
 
 @InputType()
 export class UserUncheckedUpdateInput {
@@ -13,4 +14,7 @@ export class UserUncheckedUpdateInput {
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     password?: StringFieldUpdateOperationsInput;
+
+    @Field(() => UserRoleUncheckedUpdateManyWithoutUserNestedInput, {nullable:true})
+    userRole?: UserRoleUncheckedUpdateManyWithoutUserNestedInput;
 }

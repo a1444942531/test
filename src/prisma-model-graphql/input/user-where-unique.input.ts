@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { UserWhereInput } from './user-where.input';
 import { StringFilter } from './string-filter.input';
+import { UserRoleListRelationFilter } from './user-role-list-relation-filter.input';
 
 @InputType()
 export class UserWhereUniqueInput {
@@ -23,4 +24,7 @@ export class UserWhereUniqueInput {
 
     @Field(() => StringFilter, {nullable:true})
     password?: StringFilter;
+
+    @Field(() => UserRoleListRelationFilter, {nullable:true})
+    userRole?: UserRoleListRelationFilter;
 }

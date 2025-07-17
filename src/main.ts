@@ -6,6 +6,7 @@ import { Logger } from 'nestjs-pino';
 import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { SerializeInterceptor } from './common/interceptors/serialize.interceptor';
+import { PrismaExceptionFilter } from './common/fillters/prisma.exception.fillter';
 
 async function bootstrap() {
   // 阿斯匹的教派设计的阿斯匹的教派设计的阿斯匹的教派设计的阿斯匹的教派设计的阿斯匹的教派设计的阿斯匹的教派设计的阿斯匹的教派设计的
@@ -26,7 +27,7 @@ async function bootstrap() {
   }));
 
   // 全局异常拦截器
-  // app.useGlobalFilters(new HttpExceptionFilter())
+  app.useGlobalFilters(new PrismaExceptionFilter())
   // 全局返回拦截器
   // app.useGlobalInterceptors(new SerializeInterceptor())
 

@@ -16,6 +16,9 @@
 // 回归到指定版本
 // npx prisma migrate resolve --applied --schema ./prisma/schema.prisma
 
+// 生成prisma结构代码
+// npx prisma generate
+
 generator client {
   provider = "prisma-client-js"
   output   = "../generator/prisma"
@@ -23,8 +26,8 @@ generator client {
 
 generator nestgraphql {
   provider          = "node node_modules/prisma-nestjs-graphql"
-  output            = "../../src/prisma-model-graphql"
-  outputFilePattern = "/{type}/{name}.{type}.ts"
+  output            = "../src/prisma-model-graphql"
+  outputFilePattern = "{type}/{name}.{type}.ts"
 }
 
 datasource db {
@@ -35,36 +38,41 @@ datasource db {
 model User {
   id       String     @id @default(uuid())
   username String     @unique /// 测试
+  /// @HideField()
   password String
-  UserRole UserRole[]
+  userRole UserRole[]
   // @@map("user")  // 对应表名
 }
 
+/// 角色
 model Role {
   id              String            @id @default(uuid())
   name            String            @unique
   description     String?
   users           UserRole[]
-  RolePermissions RolePermissions[]
+  rolePermissions RolePermissions[]
 }
 
+/// 用户角色
 model UserRole {
   roleId String
   userId String
-  Role   Role   @relation(fields: [roleId], references: [id])
-  User   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@id([userId, roleId]) /// 设置联合主键
 }
 
+/// 许可
 model Permission {
   id              String            @id @default(uuid())
   name            String            @unique /// ControllerName + RouteName -> user:create
   action          String /// action: READ, CREATE, UPDATE, DELETE, MANAGE
   description     String?
-  RolePermissions RolePermissions[]
+  rolePermissions RolePermissions[]
 }
 
+/// 角色许可
 model RolePermissions {
   role         Role       @relation(fields: [roleId], references: [id])
   roleId       String

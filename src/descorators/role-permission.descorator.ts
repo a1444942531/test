@@ -8,6 +8,7 @@ const accumulateMetadata = (key: string, permission: string) => {
         propertyKey?: string | symbol,
         descriptor?: TypedPropertyDescriptor<any>
     ) => {
+        // 用户获取已有的matedate
         const reflector = new Reflector()
 
         // 针对于方法 function 的装饰器

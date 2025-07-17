@@ -4,11 +4,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as dotenv from 'dotenv';
 import { LoggerModule } from 'nestjs-pino';
-import { AutoModule } from './auto/auto.module';
 import { PrismaModule } from './database/prisma/prisma.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UserModule } from './modules/user/user.module';
+import { pinoLoggerOptions } from './utils/pino.logger';
+import { AutoModule } from './modules/auto/auto.module';
+import { RoleModule } from './modules/role/role.module';
+import { ResolveModule } from './modules/resolve/resolve.module';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -34,26 +37,27 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
     }
   }),
   LoggerModule.forRoot({
-    pinoHttp: {
-      transport: process.env.NODE_ENV == 'production' ? {
-        target: 'pino-roll',
-        options: {
-          file: 'logs/log',
-          frequency: 'daily',
-          size: '10m',
-          mkdir: true,
-          dateFormat: 'yyyy-MM-dd'
-        }
-      } : {
-        target: 'pino-pretty',
-        options: {
-          colorize: true,
-        }
-      }
-    }
+    pinoHttp: pinoLoggerOptions
+    // {
+    //   transport: process.env.NODE_ENV != 'production' ? {
+    //     target: 'pino-roll',
+    //     options: {
+    //       file: 'logs/log',
+    //       frequency: 'daily',
+    //       size: '10m',
+    //       mkdir: true,
+    //       dateFormat: 'yyyy-MM-dd'
+    //     }
+    //   } : {
+    //     target: 'pino-pretty',
+    //     options: {
+    //       colorize: true,
+    //     }
+    //   }
+    // }
   }),
 
-    UserModule, PrismaModule],
+    UserModule, PrismaModule, RoleModule, ResolveModule],
   controllers: [],
   providers: [
   ],
