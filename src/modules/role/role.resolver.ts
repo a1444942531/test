@@ -4,6 +4,7 @@ import { Role } from 'src/prisma-model-graphql/model/role.model';
 import { UpdateRoleInput } from './dto/update-role.input';
 import { CreateRoleInput } from './dto/create-role.input';
 import { PaginationInput } from 'src/common/dto/pagination.input';
+import { SearchRoleInput } from './dto/search-role.input';
 
 @Resolver(() => Role)
 export class RoleResolver {
@@ -20,8 +21,8 @@ export class RoleResolver {
   }
 
   @Query(() => Role)
-  findOneRole(@Args('id') id: string) {
-    return this.roleService.findOne(id);
+  findOneRole(@Args('searchRoleInput') searchRoleInput: SearchRoleInput) {
+    return this.roleService.findOne(searchRoleInput);
   }
 
   @Mutation(() => Role)

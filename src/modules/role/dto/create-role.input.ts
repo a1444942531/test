@@ -1,7 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
 
-
-// RolePermissions
 @InputType()
 export class CreatePermission {
   @Field(() => String)

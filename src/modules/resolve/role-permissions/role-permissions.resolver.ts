@@ -1,11 +1,22 @@
-import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
+import { Field, ID, ObjectType, Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { Role } from 'src/prisma-model-graphql/model/role.model';
+import { User2 } from './user.resolver';
 
-@Resolver('Post')
+@ObjectType()
+export class Role2 {
+    @Field(() => String, {nullable:false})
+    id!: string;
+
+    @Field(() => [User2], {nullable:true})
+    users?: Array<User2>;
+}
+
+@Resolver(() => Role)
 export class RolePermissionsResolver {
-    @ResolveField(() => String)
-    protected rolePermissions(@Parent() role: { id: string }) {
-        console.log("----------------->", role)
-        return "456"
+    @ResolveField(() => [Role2])
+    protected rolePermissions2(@Parent() role: { id: string }) {
+        return [{
+            id: "aisjdiasjd"
+        }]
     }
 }

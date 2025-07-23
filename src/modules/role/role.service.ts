@@ -3,6 +3,8 @@ import { PrismaService } from 'src/database/prisma/prisma1.service';
 import { CreateRoleInput } from './dto/create-role.input';
 import { UpdateRoleInput } from './dto/update-role.input';
 import { PaginationInput } from 'src/common/dto/pagination.input';
+import { SearchRoleInput } from './dto/search-role.input';
+import { ForbiddenError } from '@nestjs/apollo';
 
 @Injectable()
 export class RoleService {
@@ -44,13 +46,7 @@ export class RoleService {
 
     return this.prismaService.role.findMany({
       skip,
-      take
-    })
-  }
-
-  findOne(id: string) {
-    return this.prismaService.role.findUnique({
-      where: { id },
+      take,
       include: {
         rolePermissions: {
           include: {
@@ -59,6 +55,30 @@ export class RoleService {
         }
       }
     })
+  }
+
+  async findOne({ id, name }: SearchRoleInput) {
+    if (id || name) {
+    } else {
+      throw new ForbiddenError("id或用户名必须传递")
+    }
+
+    const res = await this.prismaService.role.findUnique({
+      where: { id, name },
+      include: {
+        rolePermissions: {
+          include: {
+            permission: true
+          }
+        }
+      }
+    })
+
+    if (!res) {
+      throw new ForbiddenError("数据不存在")
+    }
+
+    return res
   }
 
   update({ id, description, name }: UpdateRoleInput) {

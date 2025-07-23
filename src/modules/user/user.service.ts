@@ -3,6 +3,9 @@ import { CreateUserInput } from './dto/create-user.dto';
 import { PrismaService } from 'src/database/prisma/prisma1.service';
 import { hash } from 'argon2';
 import { ConfigService } from '@nestjs/config';
+import { SearchUserInput } from './dto/search-user.dto';
+import { UpdateUserInput } from './dto/update-user.dto';
+import { ForbiddenError } from '@nestjs/apollo';
 
 @Injectable()
 export class UserService {
@@ -48,15 +51,63 @@ export class UserService {
     })
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(searchUsername: SearchUserInput) {
+    return this.prismaService.user.findUnique({
+      where: {
+        username: searchUsername.username,
+        id: searchUsername.id
+      },
+      include: {
+        userRole: {
+          include: {
+            role: {
+              include: {
+                rolePermissions: true
+              }
+            }
+          }
+        }
+      }
+    })
   }
 
-  findOne(id: number) {
-    return `This action returns a #id user`;
+  findOne(searchUsername: SearchUserInput) {
+    return this.prismaService.user.findUnique({
+      where: {
+        username: searchUsername.username,
+        id: searchUsername.id
+      },
+      include: {
+        userRole: {
+          include: {
+            role: {
+              include: {
+                rolePermissions: true
+              }
+            }
+          }
+        }
+      }
+    })
   }
 
-  update(id: number) {
+  async update(updateUserInput: UpdateUserInput) {
+    const { id, password, role, username } = updateUserInput
+
+    return await this.prismaService.$transaction(async (prisma: PrismaService) => {
+      if (id || username) {
+      } else {
+        throw new ForbiddenError("数据不存在")
+      }
+
+      if (password) {
+        const newHashPass = await hash(password)
+        updateUserInput.password = newHashPass
+      }
+
+    })
+
+
     return `This action updates a #id user`;
   }
 

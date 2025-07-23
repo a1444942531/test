@@ -20,8 +20,8 @@ export class Role {
     @Field(() => [UserRole], {nullable:true})
     users?: Array<UserRole>;
 
-    @Field(() => String, {nullable:true})
-    rolePermissions?: String;
+    @Field(() => [RolePermissions], {nullable:true})
+    rolePermissions?: Array<RolePermissions>;
 
     @Field(() => RoleCount, {nullable:false})
     _count?: RoleCount;

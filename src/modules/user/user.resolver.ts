@@ -9,6 +9,8 @@ import { RolePermissionGuard } from 'src/common/guards/role-permission.guard';
 import { User } from 'src/prisma-model-graphql/model/user.model';
 import { CreateUserInput } from './dto/create-user.dto';
 import { UserService } from './user.service';
+import { SearchUserInput } from './dto/search-user.dto';
+import { UpdateUserInput } from './dto/update-user.dto';
 
 @Resolver()
 @UseGuards(AuthGuard, RolePermissionGuard)
@@ -19,10 +21,23 @@ export class UserResolver {
         private readonly userService: UserService
     ) { }
 
+    @Query(() => User)
+    findOneUser(
+        @Args('searchUserInput') searchUserInput: SearchUserInput,
+    ) {
+        return this.userService.findOne(searchUserInput)
+    }
+
     @Mutation(() => User)
     @Public()
     createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
         return this.userService.create(createUserInput)
+    }
+
+    @Mutation(() => User)
+    @Public()
+    updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+        return this.userService.update(updateUserInput)
     }
 
     @Query(() => String, {
